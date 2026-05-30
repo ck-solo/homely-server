@@ -11,9 +11,9 @@ const conversationSchema = new mongoose.Schema(
       ],
       validate: {
         validator: function (val) {
-          return val && val.length >= 2;
+          return val && new Set(val.map(String)).size >= 2;
         },
-        message: 'A conversation must have at least 2 participants.',
+        message: 'A conversation must have at least 2 unique participants.',
       },
       required: [true, 'Participants are required'],
     },
