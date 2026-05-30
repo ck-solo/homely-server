@@ -29,8 +29,7 @@ const ownerProfileSchema = new mongoose.Schema(
   }
 );
 
-// Indexes
-ownerProfileSchema.index({ userRef: 1 });
+
 
 const OwnerProfile = mongoose.model('OwnerProfile', ownerProfileSchema);
 
