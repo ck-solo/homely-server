@@ -93,23 +93,23 @@ const tenantProfileSchema = new mongoose.Schema(
 );
 
 // Pre-validation hook to ensure roommate preferences budget max is >= min
-tenantProfileSchema.pre('validate', function (next) {
-  if (
-    this.roommatePreferences &&
-    this.roommatePreferences.budget &&
-    this.roommatePreferences.budget.max < this.roommatePreferences.budget.min
-  ) {
-    this.invalidate(
-      'roommatePreferences.budget.max',
-      'Maximum budget preference must be greater than or equal to minimum budget preference'
-    );
-  }
-  next();
-});
+// tenantProfileSchema.pre('validate', function (next) {
+//   if (
+//     this.roommatePreferences &&
+//     this.roommatePreferences.budget &&
+//     this.roommatePreferences.budget.max < this.roommatePreferences.budget.min
+//   ) {
+//     this.invalidate(
+//       'roommatePreferences.budget.max',
+//       'Maximum budget preference must be greater than or equal to minimum budget preference'
+//     );
+//   }
+//   next();
+// });
 
-// Indexes
-tenantProfileSchema.index({ city: 1 });
-tenantProfileSchema.index({ 'roommatePreferences.budget.min': 1, 'roommatePreferences.budget.max': 1 });
+// // Indexes
+// tenantProfileSchema.index({ city: 1 });
+// tenantProfileSchema.index({ 'roommatePreferences.budget.min': 1, 'roommatePreferences.budget.max': 1 });
 
 const TenantProfile = mongoose.model('TenantProfile', tenantProfileSchema);
 

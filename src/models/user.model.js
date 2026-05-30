@@ -53,8 +53,8 @@ const userSchema = new mongoose.Schema(
 );
 
 // Indexes for performance optimization on frequently queried fields
-userSchema.index({ role: 1 });
-userSchema.index({ accountStatus: 1 });
+// userSchema.index({ role: 1 });
+// userSchema.index({ accountStatus: 1 });
 
 const User = mongoose.model('User', userSchema);
 

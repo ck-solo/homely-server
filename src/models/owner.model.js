@@ -29,8 +29,6 @@ const ownerProfileSchema = new mongoose.Schema(
   }
 );
 
-
-
 const OwnerProfile = mongoose.model('OwnerProfile', ownerProfileSchema);
 
 export default OwnerProfile;

@@ -36,7 +36,7 @@ const notificationSchema = new mongoose.Schema(
 );
 
 // Compound index for querying unread notifications for a user, sorted by recency
-notificationSchema.index({ recipient: 1, isRead: 1, createdAt: -1 });
+// notificationSchema.index({ recipient: 1, isRead: 1, createdAt: -1 });
 
 const Notification = mongoose.model('Notification', notificationSchema);
 

@@ -38,7 +38,7 @@ const messageSchema = new mongoose.Schema(
 );
 
 // Compound index on conversationId and createdAt for rapid paginated chat rendering
-messageSchema.index({ conversationId: 1, createdAt: -1 });
+// messageSchema.index({ conversationId: 1, createdAt: -1 });
 
 const Message = mongoose.model('Message', messageSchema);
 

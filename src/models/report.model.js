@@ -38,10 +38,10 @@ const reportSchema = new mongoose.Schema(
 );
 
 // Indexes for administrative searches and filtering
-reportSchema.index({ status: 1 });
-reportSchema.index({ reporter: 1 });
-reportSchema.index({ reportedUser: 1 });
-reportSchema.index({ reportedListing: 1 });
+// reportSchema.index({ status: 1 });
+// reportSchema.index({ reporter: 1 });
+// reportSchema.index({ reportedUser: 1 });
+// reportSchema.index({ reportedListing: 1 });
 
 const Report = mongoose.model('Report', reportSchema);
 

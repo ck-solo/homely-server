@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const pointSchema = new mongoose.Schema(
+const locationSchema = new mongoose.Schema(
   {
     type: {
       type: String,
@@ -47,7 +47,7 @@ const listingSchema = new mongoose.Schema(
       trim: true,
     },
     location: {
-      type: pointSchema,
+      type: locationSchema,
       required: [true, 'Location coordinates are required'],
     },
     rentAmount: {
@@ -99,21 +99,21 @@ const listingSchema = new mongoose.Schema(
 );
 
 // Performance indexes
-listingSchema.index({ city: 1 });
-listingSchema.index({ rentAmount: 1 });
-listingSchema.index({ ownerRef: 1 });
-listingSchema.index({ propertyType: 1 });
-listingSchema.index({ availabilityStatus: 1 });
-listingSchema.index({ approvalStatus: 1 });
+// listingSchema.index({ city: 1 });
+// listingSchema.index({ rentAmount: 1 });
+// listingSchema.index({ ownerRef: 1 });
+// listingSchema.index({ propertyType: 1 });
+// listingSchema.index({ availabilityStatus: 1 });
+// listingSchema.index({ approvalStatus: 1 });
 
-// GeoJSON index for proximity searches
-listingSchema.index({ location: '2dsphere' });
+// // GeoJSON index for proximity searches
+// listingSchema.index({ location: '2dsphere' });
 
-// Full-text search index for Search module optimization
-listingSchema.index(
-  { title: 'text', description: 'text', city: 'text' },
-  { weights: { title: 10, city: 5, description: 1 } }
-);
+// // Full-text search index for Search module optimization
+// listingSchema.index(
+//   { title: 'text', description: 'text', city: 'text' },
+//   { weights: { title: 10, city: 5, description: 1 } }
+// );
 
 const Listing = mongoose.model('Listing', listingSchema);
 

@@ -32,7 +32,7 @@ const conversationSchema = new mongoose.Schema(
 );
 
 // Index participants array for quick chat lookups
-conversationSchema.index({ participants: 1 });
+// conversationSchema.index({ participants: 1 });
 
 const Conversation = mongoose.model('Conversation', conversationSchema);
 

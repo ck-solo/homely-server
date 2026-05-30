@@ -19,7 +19,7 @@ const favoriteSchema = new mongoose.Schema(
 );
 
 // Compound unique index to prevent duplicate saves
-favoriteSchema.index({ tenantRef: 1, listingRef: 1 }, { unique: true });
+// favoriteSchema.index({ tenantRef: 1, listingRef: 1 }, { unique: true });
 
 const Favorite = mongoose.model('Favorite', favoriteSchema);
 
