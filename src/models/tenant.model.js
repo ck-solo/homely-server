@@ -108,7 +108,6 @@ tenantProfileSchema.pre('validate', function (next) {
 });
 
 // Indexes
-tenantProfileSchema.index({ userRef: 1 });
 tenantProfileSchema.index({ city: 1 });
 tenantProfileSchema.index({ 'roommatePreferences.budget.min': 1, 'roommatePreferences.budget.max': 1 });
 
