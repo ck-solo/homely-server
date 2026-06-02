@@ -1,76 +1,83 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const locationSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ['Point'],
+      enum: ["Point"],
       required: true,
-      default: 'Point',
+      default: "Point",
     },
     coordinates: {
       type: [Number], // [longitude, latitude]
       required: true,
       validate: {
         validator: function (val) {
-          return val.length === 2 && val[0] >= -180 && val[0] <= 180 && val[1] >= -90 && val[1] <= 90;
+          return (
+            val.length === 2 &&
+            val[0] >= -180 &&
+            val[0] <= 180 &&
+            val[1] >= -90 &&
+            val[1] <= 90
+          );
         },
-        message: 'Coordinates must be [longitude, latitude] where longitude is between -180 and 180, and latitude is between -90 and 90.',
+        message:
+          "Coordinates must be [longitude, latitude] where longitude is between -180 and 180, and latitude is between -90 and 90.",
       },
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const listingSchema = new mongoose.Schema(
   {
     ownerRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: [true, 'Owner reference is required'],
+      ref: "User",
+      required: [true, "Owner reference is required"],
     },
     title: {
       type: String,
-      required: [true, 'Title is required'],
+      required: [true, "Title is required"],
       trim: true,
-      maxlength: [200, 'Title cannot exceed 200 characters'],
+      maxlength: [200, "Title cannot exceed 200 characters"],
     },
     description: {
       type: String,
-      required: [true, 'Description is required'],
+      required: [true, "Description is required"],
       trim: true,
-      maxlength: [2000, 'Description cannot exceed 2000 characters'],
+      maxlength: [2000, "Description cannot exceed 2000 characters"],
     },
     city: {
       type: String,
-      required: [true, 'City is required'],
+      required: [true, "City is required"],
       trim: true,
     },
     location: {
       type: locationSchema,
-      required: [true, 'Location coordinates are required'],
+      required: [true, "Location coordinates are required"],
     },
     rentAmount: {
       type: Number,
-      required: [true, 'Rent amount is required'],
-      min: [0, 'Rent amount cannot be negative'],
+      required: [true, "Rent amount is required"],
+      min: [0, "Rent amount cannot be negative"],
     },
     propertyType: {
       type: String,
       enum: {
-        values: ['PG', 'Hostel', 'Flat', 'Apartment', 'House'],
-        message: '{VALUE} is not a valid property type',
+        values: ["PG", "Hostel", "Flat", "Apartment", "House"],
+        message: "{VALUE} is not a valid property type",
       },
-      required: [true, 'Property type is required'],
+      required: [true, "Property type is required"],
     },
     genderPreference: {
       type: String,
       enum: {
-        values: ['MALE', 'FEMALE', 'ANY'],
-        message: '{VALUE} is not a valid gender preference option',
+        values: ["MALE", "FEMALE", "ANY"],
+        message: "{VALUE} is not a valid gender preference option",
       },
-      required: [true, 'Gender preference is required'],
-      default: 'ANY',
+      required: [true, "Gender preference is required"],
+      default: "ANY",
     },
     amenities: {
       type: [String],
@@ -87,15 +94,15 @@ const listingSchema = new mongoose.Schema(
     approvalStatus: {
       type: String,
       enum: {
-        values: ['PENDING', 'APPROVED', 'REJECTED'],
-        message: '{VALUE} is not a valid approval status',
+        values: ["PENDING", "APPROVED", "REJECTED"],
+        message: "{VALUE} is not a valid approval status",
       },
-      default: 'PENDING',
+      default: "PENDING",
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Performance indexes
@@ -115,6 +122,6 @@ const listingSchema = new mongoose.Schema(
 //   { weights: { title: 10, city: 5, description: 1 } }
 // );
 
-const Listing = mongoose.model('Listing', listingSchema);
+const Listing = mongoose.model("Listing", listingSchema);
 
 export default Listing;

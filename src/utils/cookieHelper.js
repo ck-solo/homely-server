@@ -1,5 +1,5 @@
-import envConfig from '../config/env.config.js';
-import { COOKIE_NAMES } from './constants.js';
+import envConfig from "../config/env.config.js";
+import { COOKIE_NAMES } from "./constants.js";
 
 class CookieHelper {
   /**
@@ -8,14 +8,14 @@ class CookieHelper {
    * @param {string} token - Refresh token value
    */
   static setRefreshTokenCookie(res, token) {
-    const isProduction = envConfig.NODE_ENV === 'production';
+    const isProduction = envConfig.NODE_ENV === "production";
 
     res.cookie(COOKIE_NAMES.REFRESH_TOKEN, token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? 'strict' : 'lax',
+      sameSite: isProduction ? "strict" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-      path: '/',
+      path: "/",
     });
   }
 
@@ -24,13 +24,13 @@ class CookieHelper {
    * @param {import('express').Response} res - Express response object
    */
   static clearRefreshTokenCookie(res) {
-    const isProduction = envConfig.NODE_ENV === 'production';
+    const isProduction = envConfig.NODE_ENV === "production";
 
     res.clearCookie(COOKIE_NAMES.REFRESH_TOKEN, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? 'strict' : 'lax',
-      path: '/',
+      sameSite: isProduction ? "strict" : "lax",
+      path: "/",
     });
   }
 }

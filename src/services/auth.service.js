@@ -1,8 +1,8 @@
-import bcrypt from 'bcryptjs';
-import { StatusCodes } from 'http-status-codes';
-import ApiError from '../utils/ApiError.js';
-import TokenHelper from '../utils/tokenHelper.js';
-import { ACCOUNT_STATUS } from '../utils/constants.js';
+import bcrypt from "bcryptjs";
+import { StatusCodes } from "http-status-codes";
+import ApiError from "../utils/ApiError.js";
+import TokenHelper from "../utils/tokenHelper.js";
+import { ACCOUNT_STATUS } from "../utils/constants.js";
 
 class AuthService {
   /**
@@ -23,7 +23,10 @@ class AuthService {
     // Check if user already exists
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
-      throw new ApiError(StatusCodes.CONFLICT, 'A user with this email already exists');
+      throw new ApiError(
+        StatusCodes.CONFLICT,
+        "A user with this email already exists",
+      );
     }
 
     // Hash password
@@ -68,21 +71,21 @@ class AuthService {
     // Find user by email (need password for comparison)
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Invalid email or password');
+      throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid email or password");
     }
 
     // Check if account is blocked
     if (user.accountStatus === ACCOUNT_STATUS.BLOCKED) {
       throw new ApiError(
         StatusCodes.FORBIDDEN,
-        'Your account has been blocked. Please contact support.'
+        "Your account has been blocked. Please contact support.",
       );
     }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Invalid email or password');
+      throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid email or password");
     }
 
     // Generate token pair
@@ -112,7 +115,7 @@ class AuthService {
    */
   async refreshAccessToken(refreshToken) {
     if (!refreshToken) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Refresh token is required');
+      throw new ApiError(StatusCodes.UNAUTHORIZED, "Refresh token is required");
     }
 
     // Verify refresh token
@@ -120,20 +123,26 @@ class AuthService {
     try {
       decoded = TokenHelper.verifyRefreshToken(refreshToken);
     } catch {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Invalid or expired refresh token');
+      throw new ApiError(
+        StatusCodes.UNAUTHORIZED,
+        "Invalid or expired refresh token",
+      );
     }
 
     // Find user
     const user = await this.userRepository.findById(decoded.userId);
     if (!user) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'User not found for this token');
+      throw new ApiError(
+        StatusCodes.UNAUTHORIZED,
+        "User not found for this token",
+      );
     }
 
     // Check if account is blocked
     if (user.accountStatus === ACCOUNT_STATUS.BLOCKED) {
       throw new ApiError(
         StatusCodes.FORBIDDEN,
-        'Your account has been blocked. Please contact support.'
+        "Your account has been blocked. Please contact support.",
       );
     }
 
@@ -161,17 +170,23 @@ class AuthService {
   async changePassword(userId, currentPassword, newPassword) {
     // Find user with password field
     const user = await this.userRepository.findByEmail(
-      (await this.userRepository.findById(userId))?.email
+      (await this.userRepository.findById(userId))?.email,
     );
 
     if (!user) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'User not found');
+      throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
     }
 
     // Verify current password
-    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
     if (!isPasswordValid) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Current password is incorrect');
+      throw new ApiError(
+        StatusCodes.UNAUTHORIZED,
+        "Current password is incorrect",
+      );
     }
 
     // Prevent setting the same password
@@ -179,7 +194,7 @@ class AuthService {
     if (isSamePassword) {
       throw new ApiError(
         StatusCodes.BAD_REQUEST,
-        'New password must be different from the current password'
+        "New password must be different from the current password",
       );
     }
 
@@ -188,7 +203,10 @@ class AuthService {
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
     // Update password
-    const updatedUser = await this.userRepository.updatePassword(userId, hashedPassword);
+    const updatedUser = await this.userRepository.updatePassword(
+      userId,
+      hashedPassword,
+    );
     return updatedUser;
   }
 
@@ -200,7 +218,7 @@ class AuthService {
   async getCurrentUser(userId) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'User not found');
+      throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
     }
 
     return user;

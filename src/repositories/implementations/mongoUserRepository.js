@@ -1,5 +1,5 @@
-import IUserRepository from '../contracts/IUserRepository.js';
-import User from '../../models/user.model.js';
+import IUserRepository from "../contracts/IUserRepository.js";
+import User from "../../models/user.model.js";
 
 class MongoUserRepository extends IUserRepository {
   /**
@@ -17,7 +17,7 @@ class MongoUserRepository extends IUserRepository {
    * @returns {Promise<Object|null>} User document or null
    */
   async findById(id) {
-    return User.findById(id).select('-password');
+    return User.findById(id).select("-password");
   }
 
   /**
@@ -40,8 +40,8 @@ class MongoUserRepository extends IUserRepository {
     return User.findByIdAndUpdate(
       userId,
       { password: hashedPassword },
-      { new: true, runValidators: true }
-    ).select('-password');
+      { new: true, runValidators: true },
+    ).select("-password");
   }
 }
 

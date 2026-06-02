@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import AuthController from '../../controllers/auth.controller.js';
-import AuthService from '../../services/auth.service.js';
-import MongoUserRepository from '../../repositories/implementations/mongoUserRepository.js';
-import AuthMiddleware from '../../middlewares/auth.middleware.js';
-import AuthValidator from '../../middlewares/validators/auth.validator.js';
+import { Router } from "express";
+import AuthController from "../../controllers/auth.controller.js";
+import AuthService from "../../services/auth.service.js";
+import MongoUserRepository from "../../repositories/implementations/mongoUserRepository.js";
+import AuthMiddleware from "../../middlewares/auth.middleware.js";
+import AuthValidator from "../../middlewares/validators/auth.validator.js";
 
 // ─── Dependency Injection ────────────────────────────────
 const userRepository = new MongoUserRepository();
@@ -15,32 +15,32 @@ const router = Router();
 
 // Public routes
 router.post(
-  '/register',
+  "/register",
   AuthValidator.register(),
   AuthValidator.validate,
-  authController.register
+  authController.register,
 );
 
 router.post(
-  '/login',
+  "/login",
   AuthValidator.login(),
   AuthValidator.validate,
-  authController.login
+  authController.login,
 );
 
-router.post('/refresh-token', authController.refreshToken);
+router.post("/refresh-token", authController.refreshToken);
 
 // Protected routes (require authentication)
-router.post('/logout', AuthMiddleware.authenticate, authController.logout);
+router.post("/logout", AuthMiddleware.authenticate, authController.logout);
 
-router.get('/me', AuthMiddleware.authenticate, authController.getMe);
+router.get("/me", AuthMiddleware.authenticate, authController.getMe);
 
 router.patch(
-  '/change-password',
+  "/change-password",
   AuthMiddleware.authenticate,
   AuthValidator.changePassword(),
   AuthValidator.validate,
-  authController.changePassword
+  authController.changePassword,
 );
 
 export default router;

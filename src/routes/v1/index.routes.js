@@ -1,10 +1,10 @@
-import { Router } from 'express';
-import authRoutes from './auth.routes.js';
+import { Router } from "express";
+import authRoutes from "./auth.routes.js";
 
 const router = Router();
 
 // Mount feature routes
-router.use('/auth', authRoutes);
+router.use("/auth", authRoutes);
 
 // Future routes:
 // router.use('/listings', listingRoutes);

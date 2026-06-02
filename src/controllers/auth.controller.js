@@ -1,8 +1,8 @@
-import { StatusCodes } from 'http-status-codes';
-import asyncHandler from '../utils/asyncHandler.js';
-import ApiResponse from '../utils/ApiResponse.js';
-import CookieHelper from '../utils/cookieHelper.js';
-import { COOKIE_NAMES } from '../utils/constants.js';
+import { StatusCodes } from "http-status-codes";
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import CookieHelper from "../utils/cookieHelper.js";
+import { COOKIE_NAMES } from "../utils/constants.js";
 
 class AuthController {
   /**
@@ -19,22 +19,24 @@ class AuthController {
   register = asyncHandler(async (req, res) => {
     const { name, email, password, role, phone } = req.body;
 
-    const { user, accessToken, refreshToken } = await this.authService.register({
-      name,
-      email,
-      password,
-      role,
-      phone,
-    });
+    const { user, accessToken, refreshToken } = await this.authService.register(
+      {
+        name,
+        email,
+        password,
+        role,
+        phone,
+      },
+    );
 
     // Set refresh token in httpOnly cookie
     CookieHelper.setRefreshTokenCookie(res, refreshToken);
 
     res.status(StatusCodes.CREATED).json(
-      new ApiResponse(StatusCodes.CREATED, 'User registered successfully', {
+      new ApiResponse(StatusCodes.CREATED, "User registered successfully", {
         user,
         accessToken,
-      })
+      }),
     );
   });
 
@@ -47,17 +49,17 @@ class AuthController {
 
     const { user, accessToken, refreshToken } = await this.authService.login(
       email,
-      password
+      password,
     );
 
     // Set refresh token in httpOnly cookie
     CookieHelper.setRefreshTokenCookie(res, refreshToken);
 
     res.status(StatusCodes.OK).json(
-      new ApiResponse(StatusCodes.OK, 'Login successful', {
+      new ApiResponse(StatusCodes.OK, "Login successful", {
         user,
         accessToken,
-      })
+      }),
     );
   });
 
@@ -68,9 +70,9 @@ class AuthController {
   logout = asyncHandler(async (_req, res) => {
     CookieHelper.clearRefreshTokenCookie(res);
 
-    res.status(StatusCodes.OK).json(
-      new ApiResponse(StatusCodes.OK, 'Logged out successfully')
-    );
+    res
+      .status(StatusCodes.OK)
+      .json(new ApiResponse(StatusCodes.OK, "Logged out successfully"));
   });
 
   /**
@@ -87,9 +89,9 @@ class AuthController {
     CookieHelper.setRefreshTokenCookie(res, newRefreshToken);
 
     res.status(StatusCodes.OK).json(
-      new ApiResponse(StatusCodes.OK, 'Token refreshed successfully', {
+      new ApiResponse(StatusCodes.OK, "Token refreshed successfully", {
         accessToken,
-      })
+      }),
     );
   });
 
@@ -101,9 +103,9 @@ class AuthController {
     const user = await this.authService.getCurrentUser(req.user.id);
 
     res.status(StatusCodes.OK).json(
-      new ApiResponse(StatusCodes.OK, 'User profile fetched successfully', {
+      new ApiResponse(StatusCodes.OK, "User profile fetched successfully", {
         user,
-      })
+      }),
     );
   });
 
@@ -114,14 +116,23 @@ class AuthController {
   changePassword = asyncHandler(async (req, res) => {
     const { currentPassword, newPassword } = req.body;
 
-    await this.authService.changePassword(req.user.id, currentPassword, newPassword);
+    await this.authService.changePassword(
+      req.user.id,
+      currentPassword,
+      newPassword,
+    );
 
     // Clear refresh token cookie (force re-login with new password)
     CookieHelper.clearRefreshTokenCookie(res);
 
-    res.status(StatusCodes.OK).json(
-      new ApiResponse(StatusCodes.OK, 'Password changed successfully. Please log in again.')
-    );
+    res
+      .status(StatusCodes.OK)
+      .json(
+        new ApiResponse(
+          StatusCodes.OK,
+          "Password changed successfully. Please log in again.",
+        ),
+      );
   });
 }
 

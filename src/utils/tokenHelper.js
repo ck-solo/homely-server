@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import envConfig from '../config/env.config.js';
+import jwt from "jsonwebtoken";
+import envConfig from "../config/env.config.js";
 
 class TokenHelper {
   /**

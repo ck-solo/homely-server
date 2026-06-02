@@ -1,6 +1,6 @@
-import { StatusCodes } from 'http-status-codes';
-import ApiError from '../utils/ApiError.js';
-import TokenHelper from '../utils/tokenHelper.js';
+import { StatusCodes } from "http-status-codes";
+import ApiError from "../utils/ApiError.js";
+import TokenHelper from "../utils/tokenHelper.js";
 
 class AuthMiddleware {
   /**
@@ -10,19 +10,19 @@ class AuthMiddleware {
   static authenticate(req, _res, next) {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       throw new ApiError(
         StatusCodes.UNAUTHORIZED,
-        'Access denied. No token provided.'
+        "Access denied. No token provided.",
       );
     }
 
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.split(" ")[1];
 
     if (!token) {
       throw new ApiError(
         StatusCodes.UNAUTHORIZED,
-        'Access denied. Token is malformed.'
+        "Access denied. Token is malformed.",
       );
     }
 
@@ -39,7 +39,7 @@ class AuthMiddleware {
     } catch {
       throw new ApiError(
         StatusCodes.UNAUTHORIZED,
-        'Access denied. Token is invalid or expired.'
+        "Access denied. Token is invalid or expired.",
       );
     }
   }
@@ -55,14 +55,14 @@ class AuthMiddleware {
       if (!req.user) {
         throw new ApiError(
           StatusCodes.UNAUTHORIZED,
-          'Access denied. Authentication required.'
+          "Access denied. Authentication required.",
         );
       }
 
       if (!roles.includes(req.user.role)) {
         throw new ApiError(
           StatusCodes.FORBIDDEN,
-          'Access denied. You do not have the required permissions.'
+          "Access denied. You do not have the required permissions.",
         );
       }
 

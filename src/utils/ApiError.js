@@ -5,7 +5,12 @@ class ApiError extends Error {
    * @param {Array} errors - Array of detailed validation errors
    * @param {string} stack - Optional custom stack trace
    */
-  constructor(statusCode, message = 'Something went wrong', errors = [], stack = '') {
+  constructor(
+    statusCode,
+    message = "Something went wrong",
+    errors = [],
+    stack = "",
+  ) {
     super(message);
     this.statusCode = statusCode;
     this.success = false;

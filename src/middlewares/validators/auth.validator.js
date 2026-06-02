@@ -1,7 +1,7 @@
-import { body, validationResult } from 'express-validator';
-import { StatusCodes } from 'http-status-codes';
-import ApiError from '../../utils/ApiError.js';
-import { ROLES } from '../../utils/constants.js';
+import { body, validationResult } from "express-validator";
+import { StatusCodes } from "http-status-codes";
+import ApiError from "../../utils/ApiError.js";
+import { ROLES } from "../../utils/constants.js";
 
 class AuthValidator {
   /**
@@ -10,56 +10,58 @@ class AuthValidator {
    */
   static register() {
     return [
-      body('name')
+      body("name")
         .trim()
         .notEmpty()
-        .withMessage('Name is required')
+        .withMessage("Name is required")
         .isLength({ max: 100 })
-        .withMessage('Name cannot exceed 100 characters'),
+        .withMessage("Name cannot exceed 100 characters"),
 
-      body('email')
+      body("email")
         .trim()
         .notEmpty()
-        .withMessage('Email is required')
+        .withMessage("Email is required")
         .isEmail()
-        .withMessage('Please provide a valid email address')
+        .withMessage("Please provide a valid email address")
         .normalizeEmail(),
 
-      body('password')
+      body("password")
         .notEmpty()
-        .withMessage('Password is required')
+        .withMessage("Password is required")
         .isLength({ min: 8 })
-        .withMessage('Password must be at least 8 characters long')
+        .withMessage("Password must be at least 8 characters long")
         .matches(/[A-Z]/)
-        .withMessage('Password must contain at least one uppercase letter')
+        .withMessage("Password must contain at least one uppercase letter")
         .matches(/[a-z]/)
-        .withMessage('Password must contain at least one lowercase letter')
+        .withMessage("Password must contain at least one lowercase letter")
         .matches(/[0-9]/)
-        .withMessage('Password must contain at least one number')
+        .withMessage("Password must contain at least one number")
         .matches(/[!@#$%^&*(),.?":{}|<>]/)
-        .withMessage('Password must contain at least one special character'),
+        .withMessage("Password must contain at least one special character"),
 
-      body('confirmPassword')
+      body("confirmPassword")
         .notEmpty()
-        .withMessage('Confirm password is required')
+        .withMessage("Confirm password is required")
         .custom((value, { req }) => {
           if (value !== req.body.password) {
-            throw new Error('Passwords do not match');
+            throw new Error("Passwords do not match");
           }
           return true;
         }),
 
-      body('role')
+      body("role")
         .notEmpty()
-        .withMessage('Role is required')
+        .withMessage("Role is required")
         .isIn([ROLES.TENANT, ROLES.OWNER, ROLES.ADMIN])
-        .withMessage(`Role must be one of: ${ROLES.TENANT}, ${ROLES.OWNER}, ${ROLES.ADMIN}`),
+        .withMessage(
+          `Role must be one of: ${ROLES.TENANT}, ${ROLES.OWNER}, ${ROLES.ADMIN}`,
+        ),
 
-      body('phone')
+      body("phone")
         .optional()
         .trim()
         .matches(/^\+?[1-9]\d{1,14}$/)
-        .withMessage('Please provide a valid phone number (E.164 format)'),
+        .withMessage("Please provide a valid phone number (E.164 format)"),
     ];
   }
 
@@ -69,15 +71,15 @@ class AuthValidator {
    */
   static login() {
     return [
-      body('email')
+      body("email")
         .trim()
         .notEmpty()
-        .withMessage('Email is required')
+        .withMessage("Email is required")
         .isEmail()
-        .withMessage('Please provide a valid email address')
+        .withMessage("Please provide a valid email address")
         .normalizeEmail(),
 
-      body('password').notEmpty().withMessage('Password is required'),
+      body("password").notEmpty().withMessage("Password is required"),
     ];
   }
 
@@ -87,28 +89,32 @@ class AuthValidator {
    */
   static changePassword() {
     return [
-      body('currentPassword').notEmpty().withMessage('Current password is required'),
-
-      body('newPassword')
+      body("currentPassword")
         .notEmpty()
-        .withMessage('New password is required')
+        .withMessage("Current password is required"),
+
+      body("newPassword")
+        .notEmpty()
+        .withMessage("New password is required")
         .isLength({ min: 8 })
-        .withMessage('New password must be at least 8 characters long')
+        .withMessage("New password must be at least 8 characters long")
         .matches(/[A-Z]/)
-        .withMessage('New password must contain at least one uppercase letter')
+        .withMessage("New password must contain at least one uppercase letter")
         .matches(/[a-z]/)
-        .withMessage('New password must contain at least one lowercase letter')
+        .withMessage("New password must contain at least one lowercase letter")
         .matches(/[0-9]/)
-        .withMessage('New password must contain at least one number')
+        .withMessage("New password must contain at least one number")
         .matches(/[!@#$%^&*(),.?":{}|<>]/)
-        .withMessage('New password must contain at least one special character'),
+        .withMessage(
+          "New password must contain at least one special character",
+        ),
 
-      body('confirmNewPassword')
+      body("confirmNewPassword")
         .notEmpty()
-        .withMessage('Confirm new password is required')
+        .withMessage("Confirm new password is required")
         .custom((value, { req }) => {
           if (value !== req.body.newPassword) {
-            throw new Error('New passwords do not match');
+            throw new Error("New passwords do not match");
           }
           return true;
         }),
@@ -130,8 +136,8 @@ class AuthValidator {
 
       throw new ApiError(
         StatusCodes.BAD_REQUEST,
-        'Validation failed',
-        extractedErrors
+        "Validation failed",
+        extractedErrors,
       );
     }
 

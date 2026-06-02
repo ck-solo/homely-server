@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const roommatePreferencesSchema = new mongoose.Schema(
   {
@@ -6,21 +6,21 @@ const roommatePreferencesSchema = new mongoose.Schema(
       min: {
         type: Number,
         default: 0,
-        min: [0, 'Minimum budget cannot be negative'],
+        min: [0, "Minimum budget cannot be negative"],
       },
       max: {
         type: Number,
         default: 0,
-        min: [0, 'Maximum budget cannot be negative'],
+        min: [0, "Maximum budget cannot be negative"],
       },
     },
     foodHabits: {
       type: String,
       enum: {
-        values: ['VEGETARIAN', 'NON_VEGETARIAN', 'ANY', 'VEGAN'],
-        message: '{VALUE} is not a valid food habit preference',
+        values: ["VEGETARIAN", "NON_VEGETARIAN", "ANY", "VEGAN"],
+        message: "{VALUE} is not a valid food habit preference",
       },
-      default: 'ANY',
+      default: "ANY",
     },
     smokingPreference: {
       type: Boolean,
@@ -29,31 +29,31 @@ const roommatePreferencesSchema = new mongoose.Schema(
     sleepingSchedule: {
       type: String,
       enum: {
-        values: ['EARLY_BIRD', 'NIGHT_OWL', 'FLEXIBLE'],
-        message: '{VALUE} is not a valid sleeping schedule preference',
+        values: ["EARLY_BIRD", "NIGHT_OWL", "FLEXIBLE"],
+        message: "{VALUE} is not a valid sleeping schedule preference",
       },
-      default: 'FLEXIBLE',
+      default: "FLEXIBLE",
     },
     lifestyleDetails: {
       type: [String],
       default: [],
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const tenantProfileSchema = new mongoose.Schema(
   {
     userRef: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: [true, 'User reference is required'],
+      ref: "User",
+      required: [true, "User reference is required"],
       unique: true,
     },
     bio: {
       type: String,
       trim: true,
-      maxlength: [500, 'Bio cannot exceed 500 characters'],
+      maxlength: [500, "Bio cannot exceed 500 characters"],
     },
     occupation: {
       type: String,
@@ -61,22 +61,22 @@ const tenantProfileSchema = new mongoose.Schema(
     },
     city: {
       type: String,
-      required: [true, 'City is required'],
+      required: [true, "City is required"],
       trim: true,
     },
     gender: {
       type: String,
       enum: {
-        values: ['MALE', 'FEMALE', 'NON_BINARY', 'OTHER', 'PREFER_NOT_TO_SAY'],
-        message: '{VALUE} is not a valid gender option',
+        values: ["MALE", "FEMALE", "NON_BINARY", "OTHER", "PREFER_NOT_TO_SAY"],
+        message: "{VALUE} is not a valid gender option",
       },
-      required: [true, 'Gender is required'],
+      required: [true, "Gender is required"],
     },
     age: {
       type: Number,
-      required: [true, 'Age is required'],
-      min: [18, 'Age must be at least 18'],
-      max: [120, 'Please provide a valid age'],
+      required: [true, "Age is required"],
+      min: [18, "Age must be at least 18"],
+      max: [120, "Please provide a valid age"],
     },
     profilePicture: {
       type: String,
@@ -89,7 +89,7 @@ const tenantProfileSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Pre-validation hook to ensure roommate preferences budget max is >= min
@@ -111,6 +111,6 @@ const tenantProfileSchema = new mongoose.Schema(
 // tenantProfileSchema.index({ city: 1 });
 // tenantProfileSchema.index({ 'roommatePreferences.budget.min': 1, 'roommatePreferences.budget.max': 1 });
 
-const TenantProfile = mongoose.model('TenantProfile', tenantProfileSchema);
+const TenantProfile = mongoose.model("TenantProfile", tenantProfileSchema);
 
 export default TenantProfile;
