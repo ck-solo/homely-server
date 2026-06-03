@@ -1,6 +1,6 @@
 import MongoOwnerRepository from "../repositories/implementations/mongoOwnerRepository.js";
 import MongoUserRepository from "../repositories/implementations/mongoUserRepository.js";
-import { AppError } from "../utils/errors.js";
+import ApiError from "../utils/ApiError.js";
 
 class OwnerService {
   constructor() {
@@ -12,13 +12,13 @@ class OwnerService {
     // 1. Ensure core user exists and has the correct role
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new AppError("User not found", 404);
+      throw new ApiError(404, "User not found"); //  Fixed: 404 first
     }
 
     // 2. Prevent duplicate profile creation
     const existingProfile = await this.ownerRepository.findByUserId(userId);
     if (existingProfile) {
-      throw new AppError("Owner profile already exists for this user", 409);
+      throw new ApiError(409, "Owner profile already exists for this user"); //  Fixed: 409 first
     }
 
     // 3. Assemble profile structure matching your schema
@@ -35,7 +35,7 @@ class OwnerService {
   async getOwnerProfile(userId) {
     const profile = await this.ownerRepository.findByUserId(userId);
     if (!profile) {
-      throw new AppError("Owner profile not found", 404);
+      throw new ApiError(404, "Owner profile not found"); //  Fixed
     }
     return profile;
   }
@@ -44,9 +44,12 @@ class OwnerService {
     // Prevent modification of immutable references via updates
     delete updateData.userRef;
 
-    const profile = await this.ownerRepository.updateProfileByUserId(userId, updateData);
+    const profile = await this.ownerRepository.updateProfileByUserId(
+      userId,
+      updateData,
+    );
     if (!profile) {
-      throw new AppError("Owner profile not found", 404);
+      throw new ApiError(404, "Owner profile not found"); //  Fixed
     }
     return profile;
   }
@@ -54,7 +57,7 @@ class OwnerService {
   async deleteOwnerProfile(userId) {
     const profile = await this.ownerRepository.deleteProfileByUserId(userId);
     if (!profile) {
-      throw new AppError("Owner profile not found", 404);
+      throw new ApiError(404, "Owner profile not found"); //  Fixed
     }
     return { message: "Owner profile deleted successfully" };
   }

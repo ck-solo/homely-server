@@ -1,30 +1,56 @@
+import ITenantRepository from "../contracts/ITenantRepository.js";
 import TenantProfile from "../../models/tenant.model.js"; // Adjust paths as needed
 
-class MongoTenantRepository {
+class MongoTenantRepository extends ITenantRepository {
+  /**
+   * Finds a tenant profile by the associated User ID.
+   * @param {string} userId 
+   * @returns {Promise<Object|null>}
+   */
   async findByUserId(userId) {
-    return await TenantProfile.findOne({ userRef: userId }).populate("userRef", "-password");
+    return TenantProfile.findOne({ userRef: userId }).populate("userRef", "-password");
   }
 
+  /**
+   * Creates a new tenant profile.
+   * @param {Object} profileData 
+   * @returns {Promise<Object>}
+   */
   async createProfile(profileData) {
     const profile = new TenantProfile(profileData);
-    return await profile.save();
+    return profile.save();
   }
 
+  /**
+   * Updates a tenant profile by the associated User ID.
+   * @param {string} userId 
+   * @param {Object} updateData 
+   * @returns {Promise<Object|null>}
+   */
   async updateProfileByUserId(userId, updateData) {
-    return await TenantProfile.findOneAndUpdate(
+    return TenantProfile.findOneAndUpdate(
       { userRef: userId },
       { $set: updateData },
       { new: true, runValidators: true }
     ).populate("userRef", "-password");
   }
 
+  /**
+   * Deletes a tenant profile by the associated User ID.
+   * @param {string} userId 
+   * @returns {Promise<Object|null>}
+   */
   async deleteProfileByUserId(userId) {
-    return await TenantProfile.findOneAndDelete({ userRef: userId });
+    return TenantProfile.findOneAndDelete({ userRef: userId });
   }
 
-  // Handy feature helper for later: find roommates in the same city
+  /**
+   * Finds roommates/tenants listed in a specific city.
+   * @param {string} city 
+   * @returns {Promise<Array>}
+   */
   async findByCity(city) {
-    return await TenantProfile.find({ city }).populate("userRef", "-password");
+    return TenantProfile.find({ city }).populate("userRef", "-password");
   }
 }
 
