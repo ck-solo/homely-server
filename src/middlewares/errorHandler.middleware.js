@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../utils/ApiError.js";
 import envConfig from "../config/env.config.js";
+import multer from "multer";
 
 class ErrorHandler {
   /**
@@ -18,6 +19,16 @@ class ErrorHandler {
       statusCode = err.statusCode;
       message = err.message;
       errors = err.errors;
+    }
+
+    // Handle MulterError
+    else if (err instanceof multer.MulterError) {
+      statusCode = StatusCodes.BAD_REQUEST;
+      if (err.code === "LIMIT_FILE_SIZE") {
+        message = "File is too large. Max limit is 2MB.";
+      } else {
+        message = err.message;
+      }
     }
 
     // Handle Mongoose ValidationError
