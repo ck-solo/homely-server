@@ -43,6 +43,13 @@ class MongoUserRepository extends IUserRepository {
       { new: true, runValidators: true },
     ).select("-password");
   }
+
+  async updateProfile(userId, updatedFields) {
+    return User.findByIdAndUpdate(userId, updatedFields, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+  }
 }
 
 export default MongoUserRepository;

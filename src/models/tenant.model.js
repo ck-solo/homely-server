@@ -37,7 +37,7 @@ const roommatePreferencesSchema = new mongoose.Schema(
     lifestyleDetails: {
       type: [String],
       default: [],
-    },
+    }
   },
   { _id: false },
 );
@@ -81,6 +81,8 @@ const tenantProfileSchema = new mongoose.Schema(
     profilePicture: {
       type: String,
       trim: true,
+      default: "https://ik.imagekit.io/bvd7qjtev/man-user-circle-icon.png?updatedAt=1773424691412"
+
     },
     roommatePreferences: {
       type: roommatePreferencesSchema,
