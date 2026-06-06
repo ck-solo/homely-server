@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import ApiError from "../utils/ApiError.js";
 import TokenHelper from "../utils/tokenHelper.js";
 import { ACCOUNT_STATUS } from "../utils/constants.js";
+import { emailQueue } from "../queues/emailQueue.js";
 
 class AuthService {
   /**
@@ -44,6 +45,21 @@ class AuthService {
 
     // Generate token pair
     const { accessToken, refreshToken } = TokenHelper.generateTokenPair(user);
+
+    // Queue welcome email asynchronously
+    try {
+      await emailQueue.add(
+        "welcome-user",
+        {
+          to: user.email,
+          name: user.name,
+          role: user.role,
+          registeredAt: new Date().toISOString(),
+        }
+      );
+    } catch (queueError) {
+      console.error("Failed to queue welcome email:", queueError.message);
+    }
 
     // Build user response (exclude password)
     const userResponse = {

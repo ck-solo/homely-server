@@ -2,6 +2,9 @@ import app from './src/app.js';
 import envConfig from './src/config/env.config.js';
 import DatabaseConfig from './src/config/db.config.js';
 
+// Boot up BullMQ Worker
+import './src/workers/emailWorker.js';
+
 const startServer = async () => {
   try {
     // Connect to MongoDB
