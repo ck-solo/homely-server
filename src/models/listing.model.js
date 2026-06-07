@@ -57,10 +57,10 @@ const listingSchema = new mongoose.Schema(
       type: locationSchema,
       required: [true, "Location coordinates are required"],
     },
-    rentAmount: {
+    rentBudget: {
       type: Number,
-      required: [true, "Rent amount is required"],
-      min: [0, "Rent amount cannot be negative"],
+      required: [true, "Rent budget is required"],
+      min: [0, "Rent budget cannot be negative"],
     },
     propertyType: {
       type: String,
@@ -73,11 +73,11 @@ const listingSchema = new mongoose.Schema(
     genderPreference: {
       type: String,
       enum: {
-        values: ["MALE", "FEMALE", "ANY"],
+        values: ["Male", "Female", "Co-ed"],
         message: "{VALUE} is not a valid gender preference option",
       },
       required: [true, "Gender preference is required"],
-      default: "ANY",
+      default: "Co-ed",
     },
     amenities: {
       type: [String],
@@ -98,6 +98,34 @@ const listingSchema = new mongoose.Schema(
         message: "{VALUE} is not a valid approval status",
       },
       default: "PENDING",
+    },
+
+    // ── Soft-delete fields ──────────────────────────────────────────────────
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+
+    // ── Owner tracking metrics ──────────────────────────────────────────────
+    viewsCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    savesCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    inquiriesCount: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
   },
   {
