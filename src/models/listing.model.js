@@ -57,10 +57,10 @@ const listingSchema = new mongoose.Schema(
       type: locationSchema,
       required: [true, "Location coordinates are required"],
     },
-    rentAmount: {
+    rentBudget: {
       type: Number,
-      required: [true, "Rent amount is required"],
-      min: [0, "Rent amount cannot be negative"],
+      required: [true, "Rent budget is required"],
+      min: [0, "Rent budget cannot be negative"],
     },
     propertyType: {
       type: String,
@@ -73,11 +73,11 @@ const listingSchema = new mongoose.Schema(
     genderPreference: {
       type: String,
       enum: {
-        values: ["MALE", "FEMALE", "ANY"],
+        values: ["Male", "Female", "Co-ed"],
         message: "{VALUE} is not a valid gender preference option",
       },
       required: [true, "Gender preference is required"],
-      default: "ANY",
+      default: "Co-ed",
     },
     amenities: {
       type: [String],
@@ -107,7 +107,7 @@ const listingSchema = new mongoose.Schema(
 
 // Performance indexes
 // listingSchema.index({ city: 1 });
-// listingSchema.index({ rentAmount: 1 });
+// listingSchema.index({ rentBudget: 1 });
 // listingSchema.index({ ownerRef: 1 });
 // listingSchema.index({ propertyType: 1 });
 // listingSchema.index({ availabilityStatus: 1 });
