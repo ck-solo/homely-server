@@ -16,10 +16,13 @@ const envConfig = Object.freeze({
   IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
   IMAGEKIT_PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
   IMAGEKIT_URL_ENDPOINT: process.env.IMAGEKIT_URL_ENDPOINT,
-  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
-  ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN || "15m",
-  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
-  REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN || "7d",
+  REDIS_URL: process.env.REDIS_URL || undefined,
+  REDIS_HOST: process.env.REDIS_HOST || "localhost",
+  REDIS_PORT: Number(process.env.REDIS_PORT) || 6379,
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD || undefined,
+  BREVO_API_KEY: process.env.BREVO_API_KEY,
+  BREVO_SENDER_EMAIL: process.env.BREVO_SENDER_EMAIL || "no-reply@homely.com",
+  BREVO_SENDER_NAME: process.env.BREVO_SENDER_NAME || "Homely Support",
 });
 
 export default envConfig;
