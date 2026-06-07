@@ -14,6 +14,14 @@ class IListingRepository {
   async findAll(query) {
     throw new Error('Method "findAll" not implemented');
   }
+
+  async update(id, updateData) {
+    throw new Error('Method "update" not implemented');
+  }
+
+  async findByOwner(ownerRefId) {
+    throw new Error('Method "findByOwner" not implemented');
+  }
 }
 
 export default IListingRepository;
