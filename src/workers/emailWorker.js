@@ -9,8 +9,13 @@ const worker = new Worker(
     logger.info(`Processing job ${job.id} - ${job.name}`);
 
     try {
-      if (job.name === "welcome-user" ) {
+      if (job.name === "welcome-user") {
         await sendWelcomeEmail(job.data);
+      } else if (job.name === "verify-email") {
+        const { sendVerificationEmail } = await import(
+          "../services/sendMailServices/sendVerificationEmail.js"
+        );
+        await sendVerificationEmail(job.data);
       } else {
         logger.warn(`Unknown job type: ${job.name}`);
       }

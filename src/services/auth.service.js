@@ -46,19 +46,25 @@ class AuthService {
     // Generate token pair
     const { accessToken, refreshToken } = TokenHelper.generateTokenPair(user);
 
-    // Queue welcome email asynchronously
+    // Generate email verification token
+    const verificationToken = TokenHelper.generateEmailVerificationToken({
+      userId: user._id,
+    });
+
+    const verificationUrl = `http://localhost:3000/verify-email?token=${verificationToken}`;
+
+    // Queue verification email asynchronously
     try {
       await emailQueue.add(
-        "welcome-user",
+        "verify-email",
         {
           to: user.email,
           name: user.name,
-          role: user.role,
-          registeredAt: new Date().toISOString(),
+          verificationUrl,
         }
       );
     } catch (queueError) {
-      console.error("Failed to queue welcome email:", queueError.message);
+      console.error("Failed to queue verification email:", queueError.message);
     }
 
     // Build user response (exclude password)
@@ -238,6 +244,40 @@ class AuthService {
     }
 
     return user;
+  }
+
+  /**
+   * Verifies the user's email address using the token.
+   * @param {string} token - Email verification token
+   * @returns {Promise<Object>} Updated user (without password)
+   */
+  async verifyEmail(token) {
+    if (!token) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Verification token is required");
+    }
+
+    let decoded;
+    try {
+      decoded = TokenHelper.verifyEmailVerificationToken(token);
+    } catch {
+      throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid or expired verification token");
+    }
+
+    const user = await this.userRepository.findById(decoded.userId);
+    if (!user) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "User not found for this token");
+    }
+
+    if (user.isEmailVerified) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Email is already verified");
+    }
+
+    // Update user profile to mark email as verified
+    const updatedUser = await this.userRepository.updateProfile(user._id, {
+      isEmailVerified: true,
+    });
+
+    return updatedUser;
   }
 }
 

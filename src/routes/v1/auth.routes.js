@@ -30,6 +30,7 @@ router.post(
 
 router.post("/refresh-token", authController.refreshToken);
 
+router.post("/verify-email", authController.verifyEmail);
 // Protected routes (require authentication)
 router.post("/logout", AuthMiddleware.authenticate, authController.logout);
 

@@ -134,6 +134,22 @@ class AuthController {
         ),
       );
   });
+
+  /**
+   * POST /api/v1/auth/verify-email
+   * Verifies the user's email address using a token.
+   */
+  verifyEmail = asyncHandler(async (req, res) => {
+    const { token } = req.body;
+
+    const user = await this.authService.verifyEmail(token);
+
+    res.status(StatusCodes.OK).json(
+      new ApiResponse(StatusCodes.OK, "Email verified successfully", {
+        user,
+      }),
+    );
+  });
 }
 
 export default AuthController;
