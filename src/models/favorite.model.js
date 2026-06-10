@@ -2,24 +2,24 @@ import mongoose from "mongoose";
 
 const favoriteSchema = new mongoose.Schema(
   {
-    tenantRef: {
+    tenantId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: [true, "Tenant reference is required"],
+      ref: "Tenant",
+      required: [true, "Tenant ID is required"],
     },
-    listingRef: {
+    listingId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Listing",
-      required: [true, "Listing reference is required"],
+      required: [true, "Listing ID is required"],
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-// Compound unique index to prevent duplicate saves
-// favoriteSchema.index({ tenantRef: 1, listingRef: 1 }, { unique: true });
+// Compound unique index to prevent duplicate bookmarks
+favoriteSchema.index({ tenantId: 1, listingId: 1 }, { unique: true });
 
 const Favorite = mongoose.model("Favorite", favoriteSchema);
 
