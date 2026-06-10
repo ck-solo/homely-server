@@ -1,28 +1,34 @@
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../utils/ApiError.js";
 import TokenHelper from "../utils/tokenHelper.js";
+import TenantProfile from "../models/tenant.model.js";
+import OwnerProfile from "../models/owner.model.js";
 
 class AuthMiddleware {
   /**
    * Authenticates a request by verifying the Bearer access token.
-   * Attaches decoded user info to `req.user`.
+   * Attaches decoded user info and profile ID to `req.user`.
    */
-  static authenticate(req, _res, next) {
+  static async authenticate(req, _res, next) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw new ApiError(
-        StatusCodes.UNAUTHORIZED,
-        "Access denied. No token provided.",
+      return next(
+        new ApiError(
+          StatusCodes.UNAUTHORIZED,
+          "Access denied. No token provided.",
+        )
       );
     }
 
     const token = authHeader.split(" ")[1];
 
     if (!token) {
-      throw new ApiError(
-        StatusCodes.UNAUTHORIZED,
-        "Access denied. Token is malformed.",
+      return next(
+        new ApiError(
+          StatusCodes.UNAUTHORIZED,
+          "Access denied. Token is malformed.",
+        )
       );
     }
 
@@ -35,11 +41,25 @@ class AuthMiddleware {
         role: decoded.role,
       };
 
+      if (decoded.role === "TENANT") {
+        const tenantProfile = await TenantProfile.findOne({ userRef: decoded.userId });
+        if (tenantProfile) {
+          req.user.tenantId = tenantProfile._id;
+        }
+      } else if (decoded.role === "OWNER") {
+        const ownerProfile = await OwnerProfile.findOne({ userRef: decoded.userId });
+        if (ownerProfile) {
+          req.user.ownerId = ownerProfile._id;
+        }
+      }
+
       next();
-    } catch {
-      throw new ApiError(
-        StatusCodes.UNAUTHORIZED,
-        "Access denied. Token is invalid or expired.",
+    } catch (error) {
+      next(
+        new ApiError(
+          StatusCodes.UNAUTHORIZED,
+          error.message || "Access denied. Token is invalid or expired.",
+        )
       );
     }
   }

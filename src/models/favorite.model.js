@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
+import TenantProfile from "./tenant.model.js";
+import Listing from "./listing.model.js";
 
 const favoriteSchema = new mongoose.Schema(
   {
     tenantId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Tenant",
+      ref: "TenantProfile",
       required: [true, "Tenant ID is required"],
     },
     listingId: {
