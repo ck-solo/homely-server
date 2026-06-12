@@ -29,6 +29,22 @@ class MongoListingRepository extends IListingRepository {
   async findAll(query = {}) {
     return Listing.find(query).populate("ownerRef", "name email phone");
   }
+
+  async update(id, listingData) {
+    return this.updateById(id, listingData);
+  }
+
+  async updateById(id, listingData) {
+    return Listing.findByIdAndUpdate(id, listingData, { new: true, runValidators: true });
+  }
+
+  async delete(id) {
+    return this.deleteById(id);
+  }
+
+  async deleteById(id) {
+    return Listing.findByIdAndDelete(id);
+  }
 }
 
 export default MongoListingRepository;
