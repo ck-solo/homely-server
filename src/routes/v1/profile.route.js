@@ -21,6 +21,12 @@ const upload = multer({
 
 const profileRoutes = express.Router();
 
+profileRoutes.get(
+  "/me",
+  AuthMiddleware.authenticate,
+  profileController.getProfile
+);
+
 profileRoutes.put(
   "/update-profile",
   AuthMiddleware.authenticate,

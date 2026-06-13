@@ -15,6 +15,28 @@ class ProfileService {
   }
 
   /**
+   * Fetches combined user profile (core User + role-specific profile document)
+   * @param {string} userId - User's unique ObjectId string
+   * @param {string} role - User's role ('TENANT' or 'OWNER')
+   * @returns {Promise<{ user: Object, profile: Object | null }>}
+   */
+  async getProfile(userId, role) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+    }
+
+    let profile = null;
+    if (role === "TENANT") {
+      profile = await this.tenantProfileRepository.findByUserRef(userId);
+    } else if (role === "OWNER") {
+      profile = await this.ownerProfileRepository.findByUserRef(userId);
+    }
+
+    return { user, profile };
+  }
+
+  /**
    * Updates core user profile and role-specific profile document
    * @param {string} userId - User's unique ObjectId string
    * @param {string} role - User's role ('TENANT' or 'OWNER')
