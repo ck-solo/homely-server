@@ -7,6 +7,22 @@ class IListingRepository {
     throw new Error('Method "create" not implemented');
   }
 
+  async update(id, listingData) {
+    throw new Error('Method "update" not implemented');
+  }
+
+  async updateById(id, listingData) {
+    throw new Error('Method "updateById" not implemented');
+  }
+
+  async delete(id) {
+    throw new Error('Method "delete" not implemented');
+  }
+
+  async deleteById(id) {
+    throw new Error('Method "deleteById" not implemented');
+  }
+
   async findById(id) {
     throw new Error('Method "findById" not implemented');
   }

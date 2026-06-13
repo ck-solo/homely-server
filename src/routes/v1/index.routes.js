@@ -1,16 +1,16 @@
 import { Router } from "express";
 import authRoutes from "./auth.routes.js";
 import profileRoutes from "./profile.route.js";
-import searchRoutes from "./search.routes.js";
-import favoriteRoutes from "./favorites.routes.js";
+import listingRoutes from "./listing.routes.js";
+
 
 const router = Router();
 
 // Mount feature routes
 router.use("/auth", authRoutes);
 router.use("/profile", profileRoutes);
-router.use("/listings", searchRoutes);
-router.use("/favorites", favoriteRoutes);
+router.use("/listings", listingRoutes);
+
 
 // Future routes:
 // router.use('/tenants', tenantRoutes);
