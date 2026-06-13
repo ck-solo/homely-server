@@ -30,6 +30,10 @@ class IListingRepository {
   async findAll(query) {
     throw new Error('Method "findAll" not implemented');
   }
+
+  async search(filters, pagination) {
+    throw new Error('Method "search" not implemented');
+  }
 }
 
 export default IListingRepository;
