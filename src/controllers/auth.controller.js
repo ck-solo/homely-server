@@ -150,6 +150,34 @@ class AuthController {
       }),
     );
   });
+
+  /**
+   * POST /api/v1/auth/forgot-password
+   * Initiates password reset process
+   */
+  forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    await this.authService.forgotPassword(email);
+
+    res.status(StatusCodes.OK).json(
+      new ApiResponse(StatusCodes.OK, "If this email exists, a reset link has been sent."),
+    );
+  });
+
+  /**
+   * POST /api/v1/auth/reset-password
+   * Resets password using the reset token
+   */
+  resetPassword = asyncHandler(async (req, res) => {
+    const { token, password } = req.body;
+
+    await this.authService.resetPassword(token, password);
+
+    res.status(StatusCodes.OK).json(
+      new ApiResponse(StatusCodes.OK, "Password has been successfully reset. You can now log in."),
+    );
+  });
 }
 
 export default AuthController;

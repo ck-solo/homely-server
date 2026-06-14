@@ -21,6 +21,10 @@ class IUserRepository {
   async updateProfile(userId, userData) {
     throw new Error('Method "updateProfile" not implemented');
   }
+
+  async findByValidResetToken(hashedToken) {
+    throw new Error('Method "findByValidResetToken" not implemented');
+  }
 }
 
 export default IUserRepository;
