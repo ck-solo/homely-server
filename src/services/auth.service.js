@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../utils/ApiError.js";
 import TokenHelper from "../utils/tokenHelper.js";
@@ -278,6 +279,78 @@ class AuthService {
     });
 
     return updatedUser;
+  }
+
+  /**
+   * Initiates password reset by sending an email with a secure token.
+   * @param {string} email
+   */
+  async forgotPassword(email) {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      // Do not reveal that the user does not exist
+      return;
+    }
+
+    // Generate secure token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    // Hash token for database
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    // Expiry: 15 minutes
+    const tokenExpiry = Date.now() + 15 * 60 * 1000;
+
+    await this.userRepository.updateProfile(user._id, {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: tokenExpiry,
+    });
+
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
+
+    // Queue email
+    try {
+      await emailQueue.add("reset-password", {
+        to: user.email,
+        name: user.name,
+        resetUrl,
+      });
+    } catch (error) {
+      console.error("Failed to queue reset password email:", error.message);
+    }
+  }
+
+  /**
+   * Resets the user's password using a valid token.
+   * @param {string} token 
+   * @param {string} newPassword 
+   */
+  async resetPassword(token, newPassword) {
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    const user = await this.userRepository.findByValidResetToken(hashedToken);
+    if (!user) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid or expired password reset token");
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update password using the existing method
+    await this.userRepository.updatePassword(user._id, hashedPassword);
+
+    // Clear reset token fields
+    await this.userRepository.updateProfile(user._id, {
+      $unset: { resetPasswordToken: 1, resetPasswordExpires: 1 },
+    });
   }
 }
 

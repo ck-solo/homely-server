@@ -16,6 +16,11 @@ const worker = new Worker(
           "../services/sendMailServices/sendVerificationEmail.js"
         );
         await sendVerificationEmail(job.data);
+      } else if (job.name === "reset-password") {
+        const { sendResetPasswordEmail } = await import(
+          "../services/sendMailServices/sendResetPasswordEmail.js"
+        );
+        await sendResetPasswordEmail(job.data);
       } else {
         logger.warn(`Unknown job type: ${job.name}`);
       }

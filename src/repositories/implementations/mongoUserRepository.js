@@ -50,6 +50,18 @@ class MongoUserRepository extends IUserRepository {
       runValidators: true,
     }).select("-password");
   }
+
+  /**
+   * Finds a user by a valid reset password token.
+   * @param {string} hashedToken
+   * @returns {Promise<Object|null>} User document or null
+   */
+  async findByValidResetToken(hashedToken) {
+    return User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+  }
 }
 
 export default MongoUserRepository;

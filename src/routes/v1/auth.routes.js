@@ -31,6 +31,21 @@ router.post(
 router.post("/refresh-token", authController.refreshToken);
 
 router.post("/verify-email", authController.verifyEmail);
+
+router.post(
+  "/forgot-password",
+  AuthValidator.forgotPassword(),
+  AuthValidator.validate,
+  authController.forgotPassword,
+);
+
+router.post(
+  "/reset-password",
+  AuthValidator.resetPassword(),
+  AuthValidator.validate,
+  authController.resetPassword,
+);
+
 // Protected routes (require authentication)
 router.post("/logout", AuthMiddleware.authenticate, authController.logout);
 
