@@ -10,6 +10,17 @@ class ProfileController {
     this.profileService = profileService;
   }
 
+  getProfile = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const role = req.user.role;
+
+    const result = await this.profileService.getProfile(userId, role);
+
+    res.status(StatusCodes.OK).json(
+      new ApiResponse(StatusCodes.OK, "Profile fetched successfully", result)
+    );
+  });
+
   updateProfile = asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const role = req.user.role;
@@ -31,4 +42,4 @@ class ProfileController {
   });
 }
 
-export default ProfileController;
+export default ProfileController;
