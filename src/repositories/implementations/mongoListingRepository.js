@@ -45,6 +45,72 @@ class MongoListingRepository extends IListingRepository {
   async deleteById(id) {
     return Listing.findByIdAndDelete(id);
   }
+
+  /**
+   * Searches listings with filters and pagination.
+   * @param {Object} filters - Search filters
+   * @param {Object} pagination - { page, limit }
+   * @returns {Promise<{ data: Array, total: number, page: number, limit: number }>}
+   */
+  async search(filters = {}, pagination = {}) {
+    const { page = 1, limit = 10 } = pagination;
+    const skip = (page - 1) * limit;
+
+    const query = {};
+
+    // Full-text search across title, description, city (uses text index)
+    if (filters.keyword) {
+      query.$text = { $search: filters.keyword };
+    }
+
+    // City filter (case-insensitive partial match as fallback when no keyword)
+    if (filters.city && !filters.keyword) {
+      query.city = { $regex: new RegExp(filters.city, "i") };
+    }
+
+    // Rent budget range
+    if (filters.minBudget !== undefined || filters.maxBudget !== undefined) {
+      query.rentBudget = {};
+      if (filters.minBudget !== undefined) {
+        query.rentBudget.$gte = Number(filters.minBudget);
+      }
+      if (filters.maxBudget !== undefined) {
+        query.rentBudget.$lte = Number(filters.maxBudget);
+      }
+    }
+
+    // Property type filter (supports multiple: "PG,Flat")
+    if (filters.propertyType) {
+      const types = Array.isArray(filters.propertyType)
+        ? filters.propertyType
+        : [filters.propertyType];
+      query.propertyType = { $in: types };
+    }
+
+    // Gender preference filter (supports multiple: "Male,Co-ed")
+    if (filters.genderPreference) {
+      const genders = Array.isArray(filters.genderPreference)
+        ? filters.genderPreference
+        : [filters.genderPreference];
+      query.genderPreference = { $in: genders };
+    }
+
+    // Only show available & approved listings in search
+    query.availabilityStatus = true;
+    query.approvalStatus = "APPROVED";
+
+    const [data, total] = await Promise.all([
+      Listing.find(query)
+        .populate("ownerRef", "name email phone")
+        .sort(filters.keyword ? { score: { $meta: "textScore" } } : { createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Listing.countDocuments(query),
+    ]);
+
+    return { data, total, page, limit };
+  }
 }
 
 export default MongoListingRepository;

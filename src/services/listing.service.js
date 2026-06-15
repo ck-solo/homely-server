@@ -62,6 +62,53 @@ class ListingService {
 
     return this.listingRepository.deleteById(id);
   }
+
+  /**
+   * Search and filter listings with query parameters.
+   * Supports: keyword search, city, rent range, property type, gender preference.
+   * @param {Object} queryParams - Query parameters from req.query
+   * @returns {Promise<{ data: Array, total: number, page: number, limit: number }>}
+   */
+  async searchListings(queryParams) {
+    const { search, city, minRent, maxRent, type, gender, page, limit } = queryParams;
+
+    const filters = {};
+
+    // Keyword search (uses MongoDB text index on title, description, city)
+    if (search) {
+      filters.keyword = search;
+    }
+
+    // City filter (used when no keyword search is active)
+    if (city) {
+      filters.city = city;
+    }
+
+    // Rent budget range
+    if (minRent !== undefined) {
+      filters.minBudget = minRent;
+    }
+    if (maxRent !== undefined) {
+      filters.maxBudget = maxRent;
+    }
+
+    // Property type filter (comma-separated: "PG,Flat")
+    if (type) {
+      filters.propertyType = type.split(",").map((t) => t.trim());
+    }
+
+    // Gender preference filter (comma-separated: "Male,Co-ed")
+    if (gender) {
+      filters.genderPreference = gender.split(",").map((g) => g.trim());
+    }
+
+    const pagination = {
+      page: parseInt(page, 10) || 1,
+      limit: parseInt(limit, 10) || 12,
+    };
+
+    return this.listingRepository.search(filters, pagination);
+  }
 }
 
 export default new ListingService();
