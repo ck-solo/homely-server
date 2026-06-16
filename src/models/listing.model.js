@@ -106,21 +106,21 @@ const listingSchema = new mongoose.Schema(
 );
 
 // Performance indexes
-// listingSchema.index({ city: 1 });
-// listingSchema.index({ rentBudget: 1 });
-// listingSchema.index({ ownerRef: 1 });
-// listingSchema.index({ propertyType: 1 });
-// listingSchema.index({ availabilityStatus: 1 });
-// listingSchema.index({ approvalStatus: 1 });
+listingSchema.index({ city: 1 });
+listingSchema.index({ rentBudget: 1 });
+listingSchema.index({ ownerRef: 1 });
+listingSchema.index({ propertyType: 1 });
+listingSchema.index({ availabilityStatus: 1 });
+listingSchema.index({ approvalStatus: 1 });
 
-// // GeoJSON index for proximity searches
-// listingSchema.index({ location: '2dsphere' });
+// GeoJSON index for proximity searches
+listingSchema.index({ location: '2dsphere' });
 
-// // Full-text search index for Search module optimization
-// listingSchema.index(
-//   { title: 'text', description: 'text', city: 'text' },
-//   { weights: { title: 10, city: 5, description: 1 } }
-// );
+// Full-text search index for Search module optimization
+listingSchema.index(
+  { title: 'text', description: 'text', city: 'text' },
+  { weights: { title: 10, city: 5, description: 1 } }
+);
 
 const Listing = mongoose.model("Listing", listingSchema);
 
