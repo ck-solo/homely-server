@@ -1,23 +1,27 @@
 import axios from "axios";
 import { email_style, logoUrl } from "./constants.js";
-import envConfig from "../../config/env.config.js";
 
 const BREVO_URL = "https://api.brevo.com/v3/smtp/email";
 
 /**
  * Send password reset link
- * @param {Object} data - Contains recipient info (to, name, resetUrl)
+ * @param {Object} data - Contains recipient info ({ to, name, resetUrl })
  */
-export async function sendResetPasswordEmail(data) {
-  console.log("BREVO_API_KEY loaded:", !!envConfig.BREVO_API_KEY);
-console.log("BREVO_SENDER_EMAIL:", envConfig.BREVO_SENDER_EMAIL);
+export const sendResetPasswordEmail = async ({ to, name, resetUrl }) => {
+  console.log("BREVO_API_KEY loaded:", !!process.env.BREVO_API_KEY);
+  console.log("BREVO_SENDER_EMAIL:", process.env.BREVO_SENDER_EMAIL);
   try {
     const payload = {
       sender: {
-        name: envConfig.BREVO_SENDER_NAME,
-        email: envConfig.BREVO_SENDER_EMAIL,
+        email: process.env.BREVO_SENDER_EMAIL,
+        name: process.env.BREVO_SENDER_NAME || "Homely",
       },
-      to: [{ email: data.to, name: data.name || "User" }],
+      to: [
+        {
+          email: to,
+          name: name || "User",
+        },
+      ],
       subject: `Reset Your Password - Homely`,
 
       htmlContent: `
@@ -46,12 +50,12 @@ console.log("BREVO_SENDER_EMAIL:", envConfig.BREVO_SENDER_EMAIL);
       </h1>
       
       <p style="font-size: 15px; line-height: 1.6; color: #475569; margin: 0 0 24px;">
-        Hello ${data.name || "User"},<br/><br/>
+        Hello ${name || "User"},<br/><br/>
         We received a request to reset your password for your Homely account. You can reset your password by clicking the button below.
       </p>
 
       <div style="text-align: center; margin: 32px 0;">
-        <a href="${data.resetUrl}"
+        <a href="${resetUrl}"
            style="
              display: inline-block;
              background-color: #4f46e5;
@@ -69,7 +73,7 @@ console.log("BREVO_SENDER_EMAIL:", envConfig.BREVO_SENDER_EMAIL);
 
       <p style="font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 24px;">
         Or copy and paste this link into your browser:<br/>
-        <a href="${data.resetUrl}" style="color: #4f46e5; word-break: break-all;">${data.resetUrl}</a>
+        <a href="${resetUrl}" style="color: #4f46e5; word-break: break-all;">${resetUrl}</a>
       </p>
       
       <p style="font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 24px;">
@@ -90,12 +94,12 @@ console.log("BREVO_SENDER_EMAIL:", envConfig.BREVO_SENDER_EMAIL);
 </div>
 `,
       textContent: `
-Hello ${data.name || "User"},
+Hello ${name || "User"},
 
 We received a request to reset your password for your Homely account.
 
 Click the following link to reset your password (expires in 15 minutes):
-${data.resetUrl}
+${resetUrl}
 
 If you did not request a password reset, please ignore this email and your password will remain unchanged.
 
@@ -106,7 +110,7 @@ Homely Team
 
     const response = await axios.post(BREVO_URL, payload, {
       headers: {
-        "api-key": envConfig.BREVO_API_KEY,
+        "api-key": process.env.BREVO_API_KEY,
         "Content-Type": "application/json",
       },
     });
@@ -114,11 +118,7 @@ Homely Team
     console.log("RESET PASSWORD EMAIL SENT:", response.data.messageId);
     return response.data;
   } catch (error) {
-    console.error("Brevo reset password email failed:", {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-    });
-    throw error; // Propagate the error so BullMQ can trigger retries
+    console.error("Brevo reset email failed:", error.response?.data || error.message);
+    throw error;
   }
-}
+};
