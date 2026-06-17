@@ -9,6 +9,7 @@ const startServer = async () => {
   try {
     // Connect to MongoDB
     await DatabaseConfig.connect();
+    console.log("BREVO_SENDER_EMAIL =", process.env.BREVO_SENDER_EMAIL);
 
     // Start Express server
     app.listen(envConfig.PORT, () => {

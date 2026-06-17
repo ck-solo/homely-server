@@ -291,6 +291,7 @@ class AuthService {
       // Do not reveal that the user does not exist
       return;
     }
+    console.log("Forgot Password: User found for email", email);
 
     // Generate secure token
     const resetToken = crypto.randomBytes(32).toString("hex");
@@ -308,6 +309,7 @@ class AuthService {
       resetPasswordToken: hashedToken,
       resetPasswordExpires: tokenExpiry,
     });
+    console.log("Forgot Password: Reset token saved in DB");
 
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
     const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
@@ -319,6 +321,7 @@ class AuthService {
         name: user.name,
         resetUrl,
       });
+      console.log("Forgot Password: Reset password email job added to emailQueue");
     } catch (error) {
       console.error("Failed to queue reset password email:", error.message);
     }

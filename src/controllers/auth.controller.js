@@ -170,9 +170,9 @@ class AuthController {
    * Resets password using the reset token
    */
   resetPassword = asyncHandler(async (req, res) => {
-    const { token, password } = req.body;
+    const { token, newPassword } = req.body;
 
-    await this.authService.resetPassword(token, password);
+    await this.authService.resetPassword(token, newPassword);
 
     res.status(StatusCodes.OK).json(
       new ApiResponse(StatusCodes.OK, "Password has been successfully reset. You can now log in."),

@@ -145,26 +145,26 @@ class AuthValidator {
     return [
       body("token").notEmpty().withMessage("Reset token is required"),
 
-      body("password")
+      body("newPassword")
         .notEmpty()
-        .withMessage("Password is required")
+        .withMessage("New password is required")
         .isLength({ min: 8 })
-        .withMessage("Password must be at least 8 characters long")
+        .withMessage("New password must be at least 8 characters long")
         .matches(/[A-Z]/)
-        .withMessage("Password must contain at least one uppercase letter")
+        .withMessage("New password must contain at least one uppercase letter")
         .matches(/[a-z]/)
-        .withMessage("Password must contain at least one lowercase letter")
+        .withMessage("New password must contain at least one lowercase letter")
         .matches(/[0-9]/)
-        .withMessage("Password must contain at least one number")
+        .withMessage("New password must contain at least one number")
         .matches(/[!@#$%^&*(),.?":{}|<>]/)
-        .withMessage("Password must contain at least one special character"),
+        .withMessage("New password must contain at least one special character"),
 
-      body("confirmPassword")
+      body("confirmNewPassword")
         .notEmpty()
-        .withMessage("Confirm password is required")
+        .withMessage("Confirm new password is required")
         .custom((value, { req }) => {
-          if (value !== req.body.password) {
-            throw new Error("Passwords do not match");
+          if (value !== req.body.newPassword) {
+            throw new Error("New passwords do not match");
           }
           return true;
         }),

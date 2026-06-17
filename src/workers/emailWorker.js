@@ -17,6 +17,7 @@ const worker = new Worker(
         );
         await sendVerificationEmail(job.data);
       } else if (job.name === "reset-password") {
+        console.log("RESET EMAIL RECIPIENT:", job.data.to);
         const { sendResetPasswordEmail } = await import(
           "../services/sendMailServices/sendResetPasswordEmail.js"
         );
