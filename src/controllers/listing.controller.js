@@ -1,7 +1,19 @@
 import listingService from "../services/listing.service.js";
+import { uploadToS3 } from "../services/s3.service.js";
 
 export const createListing = async (req, res, next) => {
   try {
+    console.log("Multer Files:", req.files);
+    const imageUrls = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const url = await uploadToS3(file, req.user.id);
+        imageUrls.push(url);
+      }
+    }
+    // Put uploaded S3 URLs in req.body.images for the validator and listing creation
+    req.body.images = imageUrls;
+
     const listing = await listingService.createListing(
       req.body,
       req.user.id
@@ -65,6 +77,26 @@ export const getAllListings = async (req, res, next) => {
 
 export const updateListing = async (req, res, next) => {
   try {
+    console.log("Multer Files (Update):", req.files);
+    const imageUrls = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const url = await uploadToS3(file, req.user.id);
+        imageUrls.push(url);
+      }
+    }
+
+    // Combine existing images (sent in body) and new S3 image URLs
+    let existingImages = req.body.images || [];
+    if (typeof existingImages === "string") {
+      try {
+        existingImages = JSON.parse(existingImages);
+      } catch (e) {
+        existingImages = [existingImages];
+      }
+    }
+    req.body.images = [...existingImages, ...imageUrls];
+
     const listing = await listingService.updateListing(
       req.params.id,
       req.user.id,

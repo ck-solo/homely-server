@@ -23,6 +23,10 @@ const envConfig = Object.freeze({
   BREVO_API_KEY: process.env.BREVO_API_KEY,
   BREVO_SENDER_EMAIL: process.env.BREVO_SENDER_EMAIL || "no-reply@homely.com",
   BREVO_SENDER_NAME: process.env.BREVO_SENDER_NAME || "Homely Support",
+  AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
+  AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
+  AWS_REGION: process.env.AWS_REGION || "ap-south-1",
+  AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
 });
 
 export default envConfig;
