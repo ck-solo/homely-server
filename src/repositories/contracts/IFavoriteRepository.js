@@ -14,6 +14,10 @@ class IFavoriteRepository {
   async getFavoritesByTenantId(tenantId) {
     throw new Error('Method "getFavoritesByTenantId" not implemented');
   }
+
+  async findFavorite(tenantId, listingId) {
+    throw new Error('Method "findFavorite" not implemented');
+  }
 }
 
 export default IFavoriteRepository;

@@ -31,6 +31,18 @@ class FavoriteService {
   async getSavedProperties(tenantId) {
     return await this.favoriteRepository.getFavoritesByTenantId(tenantId);
   }
+
+  async toggleFavorite(tenantId, listingId) {
+    const existing = await this.favoriteRepository.findFavorite(tenantId, listingId);
+
+    if (existing) {
+      await this.favoriteRepository.deleteFavorite(tenantId, listingId);
+      return { isFavorited: false, favorite: null };
+    }
+
+    const favorite = await this.favoriteRepository.createFavorite(tenantId, listingId);
+    return { isFavorited: true, favorite };
+  }
 }
 
 export default FavoriteService;
