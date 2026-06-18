@@ -70,7 +70,8 @@ class ListingService {
    * @returns {Promise<{ data: Array, total: number, page: number, limit: number }>}
    */
   async searchListings(queryParams) {
-    const { search, city, minRent, maxRent, type, gender, page, limit } = queryParams;
+    const { search, city, minRent, maxRent, type, gender, page, limit } =
+      queryParams;
 
     const filters = {};
 
