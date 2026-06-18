@@ -25,7 +25,7 @@ class ErrorHandler {
     else if (err instanceof multer.MulterError) {
       statusCode = StatusCodes.BAD_REQUEST;
       if (err.code === "LIMIT_FILE_SIZE") {
-        message = "File is too large. Max limit is 2MB.";
+        message = "File is too large. Max limit is 5MB.";
       } else {
         message = err.message;
       }
