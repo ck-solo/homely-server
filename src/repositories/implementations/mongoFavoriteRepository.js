@@ -38,6 +38,16 @@ class MongoFavoriteRepository extends IFavoriteRepository {
   async getFavoritesByTenantId(tenantId) {
     return Favorite.find({ tenantId }).populate("listingId");
   }
+
+  /**
+   * Checks if a favorite entry exists for the given tenant and listing.
+   * @param {string} tenantId - Tenant ObjectId
+   * @param {string} listingId - Listing ObjectId
+   * @returns {Promise<Object|null>} Favorite document or null
+   */
+  async findFavorite(tenantId, listingId) {
+    return Favorite.findOne({ tenantId, listingId });
+  }
 }
 
 export default MongoFavoriteRepository;

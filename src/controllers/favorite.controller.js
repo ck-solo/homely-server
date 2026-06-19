@@ -74,6 +74,34 @@ class FavoriteController {
       new ApiResponse(StatusCodes.OK, "Bookmarked properties fetched successfully", favorites)
     );
   });
+
+  toggleFavorite = asyncHandler(async (req, res) => {
+    const tenantId = req.user.tenantId;
+    if (!tenantId) {
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        "Tenant profile not found. Please create a tenant profile first."
+      );
+    }
+
+    const { listingId } = req.params;
+    if (!listingId) {
+      throw new ApiError(
+        StatusCodes.BAD_REQUEST,
+        "Listing ID is required"
+      );
+    }
+
+    const result = await this.favoriteService.toggleFavorite(tenantId, listingId);
+
+    const message = result.isFavorited
+      ? "Property added to favorites"
+      : "Property removed from favorites";
+
+    res.status(StatusCodes.OK).json(
+      new ApiResponse(StatusCodes.OK, message, result)
+    );
+  });
 }
 
 export default FavoriteController;

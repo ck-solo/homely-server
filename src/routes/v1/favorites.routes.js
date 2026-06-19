@@ -16,6 +16,7 @@ router.use(AuthMiddleware.authorize("TENANT"));
 
 // Routes
 router.post("/create", favoriteController.saveProperty);
+router.post("/toggle/:listingId", favoriteController.toggleFavorite);
 router.delete("/delete/:listingId", favoriteController.removeSavedProperty);
 router.get("/get", favoriteController.getSavedProperties);
 
