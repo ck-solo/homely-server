@@ -5,6 +5,7 @@ import ApiError from "../utils/ApiError.js";
 import TokenHelper from "../utils/tokenHelper.js";
 import { ACCOUNT_STATUS } from "../utils/constants.js";
 import { emailQueue } from "../queues/emailQueue.js";
+import envConfig from "../config/env.config.js";
 
 class AuthService {
   /**
@@ -52,7 +53,7 @@ class AuthService {
       userId: user._id,
     });
 
-    const verificationUrl = `http://localhost:3000/verify-email?token=${verificationToken}`;
+    const verificationUrl = `${envConfig.FRONTEND_URL}/verify-email?token=${verificationToken}`;
 
     // Queue verification email asynchronously
     try {
@@ -311,8 +312,7 @@ class AuthService {
     });
     console.log("Forgot Password: Reset token saved in DB");
 
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-    const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
+    const resetUrl = `${envConfig.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
     // Queue email
     try {
